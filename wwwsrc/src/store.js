@@ -20,7 +20,8 @@ let api = Axios.create({
 export default new Vuex.Store({
   state: {
     user: {},
-    keeps: []
+    keeps: [],
+    keepView: {}
   },
   mutations: {
     setUser(state, user) {
@@ -28,6 +29,12 @@ export default new Vuex.Store({
     },
     setKeeps(state, keeps) {
       state.keeps = keeps
+    },
+    addKeep(state, newKeep) {
+      state.keeps.push(newKeep)
+    },
+    setKeepView(state, keep) {
+      state.keepView = keep
     }
   },
   actions: {
@@ -59,9 +66,7 @@ export default new Vuex.Store({
           commit('setUser', res.data)
           router.push({ name: 'home' })
         })
-        .catch(e => {
-          console.log('Login Failed')
-        })
+        .catch(e => { console.log('Login Failed', e) })
     },
     logout({ commit }) {
       auth.delete('logout')
@@ -77,10 +82,21 @@ export default new Vuex.Store({
     // Keeps
     getPublicKeeps({ commit }) {
       api.get('keeps')
+        .then(res => { commit('setKeeps', res.data) })
+        .catch(e => { console.log('Unable to get Keeps', e) })
+    },
+    addKeep({ commit }, newKeep) {
+      api.post('keeps', newKeep)
+        .then(res => commit('addKeep', newKeep))
+        .catch(e => { console.log('Unable to add Keep', e) })
+    },
+    getKeep({ commit }, id) {
+      api.get('keeps/' + id)
         .then(res => {
-          commit('setKeeps', res.data)
+          commit('setKeepView', res.data)
+          router.push({ name: 'keep', params: { id: id } })
         })
-        .catch(e => { console.log('Unable to get Keeps') })
+        .catch(e => { console.log('Unable to add Keep', e) })
     }
   }
 })

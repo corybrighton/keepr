@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Keepr.Models;
 using Keepr.Repositories;
@@ -26,27 +25,30 @@ namespace BurgerShack.Controllers
       return _repo.GetAll();
     }
 
-    // // GET api/Burgers/5
-    // [HttpGet("{id}")]
-    // public ActionResult<Burger> Get(int id)
-    // {
-    //   Burger burger = _burgerRepo.GetBurgerById(id);
-    //   if (burger != null)
-    //   {
-    //     return Ok(burger);
-    //   }
-    //   else
-    //   {
-    //     return NotFound();
-    //   }
-    // }
+    // GET api/Keeps/5
+    [HttpGet("{id}")]
+    public ActionResult<Keep> Get(int id)
+    {
+      Keep keep = _repo.GetById(id);
+      if (keep != null)
+      {
+        return Ok(keep);
+      }
+      else
+      {
+        return NotFound();
+      }
+    }
 
-    // // POST api/Burgers
-    // [HttpPost]
-    // public ActionResult<List<Burger>> Post([FromBody] Burger burger)
-    // {
-    //   return Ok(_burgerRepo.AddBurger(burger));
-    // }
+    // POST api/Keeps
+    [HttpPost]
+    public ActionResult<string> Post([FromBody] Keep keep)
+    {
+      keep.UserId = HttpContext.User.Identity.Name;
+      if (keep.UserId != null)
+        return Ok(_repo.AddKeep(keep));
+      return Unauthorized();
+    }
 
     // // PUT api/Burgers/5
     // [HttpPut("{id}")]
@@ -55,13 +57,13 @@ namespace BurgerShack.Controllers
     //   return Ok(_burgerRepo.UpdateBurger(id, burger));
     // }
 
-    // // // DELETE api/Burgers/5
-    // [HttpDelete("{id}")]
-    // public ActionResult<string> Delete(int id)
-    // {
-    //   if (_burgerRepo.DeleteBurger(id)) { return Ok("Successfully Deleted"); }
-    //   return BadRequest();
-    // }
+    // DELETE api/Burgers/5
+    [HttpDelete("{id}")]
+    public ActionResult<string> Delete(int id)
+    {
+      if (_repo.DeleteKeep(id, HttpContext.User.Identity.Name)) { return Ok("Successfully Deleted"); }
+      return BadRequest("Unable to Delete");
+    }
 
   }
 }

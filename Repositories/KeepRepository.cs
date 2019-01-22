@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Security.Claims;
 using Dapper;
+using keepr.Models;
 using Keepr.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Keepr.Repositories
 {
@@ -21,23 +24,21 @@ namespace Keepr.Repositories
 
     public Keep GetById(int id)
     {
-      return _db.QueryFirstOrDefault<Keep>($"SELECT * FROM Keeps WHERE id = @id", new { id });
+      _db.Execute(@"
+      UPDATE Keeps SET 
+      views = views + 1
+      WHERE id = @id;", new { id });
+      return _db.QueryFirstOrDefault<Keep>("SELECT * FROM Keeps WHERE id = @id;", new { id });
     }
 
-    //   // Create
-    //   public Burger AddBurger(Burger burger)
-    //   {
-    //     int id = _db.ExecuteScalar<int>(@"
-    // INSERT INTO Burgers (name, description, price) VALUES (@Name, @Description, @Price); 
-    // SELECT LAST_INSERT_ID()", new
-    //     {
-    //       burger.Name,
-    //       burger.Description,
-    //       burger.Price
-    //     });
-    //     burger.id = id;
-    //     return burger;
-    //   }
+    // Create
+    public string AddKeep(Keep keep)
+    {
+      return _db.ExecuteScalar<int>(@"
+    INSERT INTO keeps (name, description, userId, img, isPrivate) VALUES (@Name, @Description, @UserId, @Img, @IsPrivate); 
+    SELECT LAST_INSERT_ID()", keep) != 0
+        ? "Success" : "Did not add";
+    }
 
     //   // Update
     //   public Burger UpdateBurger(int id, Burger burger)
@@ -59,10 +60,11 @@ namespace Keepr.Repositories
     //     return burger;
     //   }
 
-    //   public bool DeleteBurger(int id)
-    //   {
-    //     _db.Query<Burger>($"DELETE FROM Burgers WHERE id = @id", new { id });
-    //     return true;
-    //   }
+    public bool DeleteKeep(int id, string userId)
+    {
+      int exe = _db.Execute($"DELETE FROM Keeps WHERE id = @id AND userId = @userId", new { id, userId });
+      Console.WriteLine(exe);
+      return exe != 0;
+    }
   }
 }
