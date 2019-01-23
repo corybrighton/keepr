@@ -1,8 +1,20 @@
 <template>
   <div id="app">
     <router-view />
+    <div class="mb-5">
+      <navbar class="fixed-bottom" />
+    </div>
   </div>
 </template>
+
+<script>
+  import navbar from '@/components/Navbar.vue'
+  export default {
+    components: {
+      navbar
+    }
+  }
+</script>
 
 <style>
   #app {

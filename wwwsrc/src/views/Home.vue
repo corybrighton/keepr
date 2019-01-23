@@ -4,8 +4,8 @@
     <button v-if="checkedLoggedIn2()" @click="logout">Logout</button>
     <form @submit.prevent="addKeep">
       <input type="text" placeholder="Title" v-model.trim="newKeep.name" maxlength="20" required>
-      <input type="text" placeholder="Description" v-model.trim="newKeep.description" required>
-      <input type="text" placeholder="Image URL" v-model.trim="newKeep.img" required>
+      <input type="text" placeholder="Description" v-model.trim="newKeep.description" required maxlength="255">
+      <input type="text" placeholder="Image URL" v-model.trim="newKeep.img" required maxlength="255">
       <button type="submit">Add Keep</button>
       <button type="reset">Reset Form</button>
     </form>
@@ -44,6 +44,7 @@
     mounted() {
       this.checkedLoggedIn()
       this.getKeeps()
+      this.getVaults()
     },
     methods: {
       logout() {
@@ -60,12 +61,29 @@
       getKeeps() {
         this.$store.dispatch('getPublicKeeps')
       },
+      getVaults() {
+        this.$store.dispatch('getVaults')
+      },
       addKeep() {
-        if (this.user.id)
+        if (this.user.id) {
           this.$store.dispatch('addKeep', this.newKeep)
+          this.newKeep = {
+            name: "",
+            description: "",
+            img: ""
+          }
+        }
       }
     }, components: {
       keep
     }
   };
 </script>
+
+<style>
+  .card-body:hover,
+  .card-img-top:hover,
+  .card-title:hover {
+    cursor: pointer;
+  }
+</style>

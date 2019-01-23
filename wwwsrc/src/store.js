@@ -21,7 +21,9 @@ export default new Vuex.Store({
   state: {
     user: {},
     keeps: [],
-    keepView: {}
+    keepView: {},
+    vaults: [],
+    vaultView: {}
   },
   mutations: {
     setUser(state, user) {
@@ -35,7 +37,14 @@ export default new Vuex.Store({
     },
     setKeepView(state, keep) {
       state.keepView = keep
+    },
+    setVaults(state, vaults) {
+      state.vaults = vaults
+    },
+    setVaultView(state, vault) {
+      state.vaultView = vault
     }
+
   },
   actions: {
 
@@ -44,7 +53,6 @@ export default new Vuex.Store({
       auth.post('register', newUser)
         .then(res => {
           commit('setUser', res.data)
-          router.push({ name: 'home' })
         })
         .catch(e => {
           console.log('[registration failed] :', e)
@@ -54,7 +62,6 @@ export default new Vuex.Store({
       auth.get('authenticate')
         .then(res => {
           commit('setUser', res.data)
-          router.push({ name: 'home' })
         })
         .catch(e => {
           console.log('not authenticated')
@@ -64,7 +71,6 @@ export default new Vuex.Store({
       auth.post('login', creds)
         .then(res => {
           commit('setUser', res.data)
-          router.push({ name: 'home' })
         })
         .catch(e => { console.log('Login Failed', e) })
     },
@@ -72,7 +78,6 @@ export default new Vuex.Store({
       auth.delete('logout')
         .then(res => {
           commit('setUser', {})
-          router.push({ name: 'login' })
         })
         .catch(e => {
           console.log('Logout Failed')
@@ -90,13 +95,37 @@ export default new Vuex.Store({
         .then(res => commit('addKeep', newKeep))
         .catch(e => { console.log('Unable to add Keep', e) })
     },
-    getKeep({ commit }, id) {
+    getKeep({ commit, dispatch }, id) {
+      commit('setKeepView', {})
       api.get('keeps/' + id)
         .then(res => {
           commit('setKeepView', res.data)
-          router.push({ name: 'keep', params: { id: id } })
+          dispatch('getPublicKeeps')
         })
         .catch(e => { console.log('Unable to add Keep', e) })
+    },
+
+    // Vaults
+    getVaults({ commit }) {
+      api.get('vaults/')
+        .then(res => {
+          commit('setVaults', res.data)
+        })
+        .catch(e => { console.log('Unable to get Vaults', e) })
+    },
+    getVault({ commit }, id) {
+      api.get('vaults/' + id)
+        .then(res => {
+          commit('setVaultView', res.data)
+          router.push({ name: 'vault', params: { id: id } })
+        })
+        .catch(e => { console.log('Unable to get Vault', e) })
+    },
+    addToVault({ commit, dispatch }, vaultkeep) {
+      console.log(vaultkeep)
+      api.post('vaults/' + vaultkeep.vaultId)
+        .then(res => dispatch('getPublicKeeps'))
+        .catch(e => { console.log('Unable to add keep to vault', e) })
     }
   }
 })

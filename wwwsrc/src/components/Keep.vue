@@ -1,8 +1,8 @@
 <template>
-  <div class="Keep col-xl-2 col-lg-3 col-md-4 col-sm-6 mt-3" @click="getKeep()">
+  <div class="Keep col-xl-2 col-lg-3 col-md-4 col-sm-6 mt-3">
     <div class="card h-100">
-      <img :src=this.kp.img class="card-img-top">
-      <div class="card-body">
+      <img :src=this.kp.img class="card-img-top" @click="showModal">
+      <div class="card-body" @click="showModal">
         <h5 class="card-title">
           {{this.kp.name}}
         </h5>
@@ -12,29 +12,63 @@
       </div>
       <div class="card-footer">
         <small class="text-muted justify-content-between d-flex">
-          <i class="fas fa-eye"></i>{{this.kp.views}}
-          <i class="fas fa-share"></i>{{this.kp.shares}}
-          <i class="fas fa-bookmark"></i>{{this.kp.keeps}}
+          <div>
+            <i class="fas fa-eye"></i>{{this.kp.views}}
+          </div>
+          <div>
+            <i class="fas fa-share"></i>{{this.kp.shares}}
+          </div>
+          <div class="dropdown">
+            <i class="fas fa-bookmark  dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              {{this.kp.keeps}}
+            </i>
+            <div v-if="user.id" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a v-for="(vault, index) in vaults" :key="index" class="dropdown-item" @click="addToVault(vault.id)">{{vault.name}}</a>
+            </div>
+            <div v-else class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">Please Log in</a>
+            </div>
+          </div>
         </small>
       </div>
-
     </div>
+    <keepModal v-show="isModalVisible" @close="closeModal" />
   </div>
 </template>
 
 <script>
+  import keepModal from '@/components/KeepModal.vue'
   export default {
     name: 'Keep',
     props: ['kp'],
     data() {
       return {
-
+        isModalVisible: false
       }
     },
-    computed: {},
+    components: {
+      keepModal
+    },
+    computed: {
+      user() {
+        return this.$store.state.user
+      },
+      vaults() {
+        return this.$store.state.vaults
+      }
+    },
     methods: {
-      getKeep() {
+      showModal() {
         this.$store.dispatch('getKeep', this.kp.id)
+        this.isModalVisible = true;
+      },
+      closeModal() {
+        this.isModalVisible = false;
+      },
+      addToVault(id) {
+        let vaultkeep = { UserId: "", VaultId: id, KeepId: this.kp.id }
+        this.$store.dispatch('addToVault', vaultkeep)
       }
     }
   }

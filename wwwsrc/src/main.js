@@ -7,6 +7,10 @@ import store from './store'
 // Vue.config.productionTip = false
 
 new Vue({
+  mounted() {
+    //checks for valid session
+    this.$store.dispatch("authenticate");
+  },
   router,
   store,
   render: h => h(App)
