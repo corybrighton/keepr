@@ -1,8 +1,9 @@
 <template>
   <div id="app">
+    <div class="space"></div>
     <router-view />
     <div class="space">
-      <navbar class="fixed-bottom" />
+      <navbar class="fixed-top" />
     </div>
   </div>
 </template>
@@ -17,12 +18,17 @@
 </script>
 
 <style>
+  body {
+    background-color: #102372;
+    color: white;
+    font-family: cursive;
+  }
+
   #app {
     font-family: "Avenir", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
   }
 
   #nav {

@@ -1,7 +1,5 @@
 <template>
   <div class="home container-fluid">
-    <h1>Welcome Home {{this.user.username}}</h1>
-
     <!-- Keeps -->
     <div class="row d-flex card-deck">
       <keep v-for="k in keeps" :kp="k" :key="k.id" :view="'home'" />

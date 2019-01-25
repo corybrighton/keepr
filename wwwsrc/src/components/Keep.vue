@@ -94,6 +94,7 @@
 </script>
 
 <style>
-
-
+  .card {
+    color: black;
+  }
 </style>
