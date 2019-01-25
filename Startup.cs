@@ -47,7 +47,7 @@ namespace Keepr
           {
             options.AddPolicy("CorsDevPolicy", builder =>
                   {
-                    builder.WithOrigins(new string[] { "http://localhost:8080" })
+                    builder.WithOrigins(new string[] { "http://localhost:8080", "https://keepr5.herokuapp.com/" })
                               .AllowAnyMethod()
                               .AllowAnyHeader()
                               .AllowCredentials();
