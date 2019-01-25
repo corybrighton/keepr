@@ -44,6 +44,12 @@ namespace Keepr.Repositories
         ? "Success" : "Did not add";
     }
 
+    internal string UpdateKeepShares(int id)
+    {
+      _db.Execute("UPDATE keeps SET shares=shares+1 WHERE id=@id", new { id });
+      return "ok";
+    }
+
     //   // Update
     //   public Burger UpdateBurger(int id, Burger burger)
     //   {

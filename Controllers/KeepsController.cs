@@ -59,12 +59,12 @@ namespace BurgerShack.Controllers
       return Unauthorized();
     }
 
-    // // PUT api/Burgers/5
-    // [HttpPut("{id}")]
-    // public ActionResult<Burger> Put(int id, [FromBody] Burger burger)
-    // {
-    //   return Ok(_burgerRepo.UpdateBurger(id, burger));
-    // }
+    // PUT api/Keeps/5
+    [HttpPut("{id}")]
+    public ActionResult<string> Put(int id)
+    {
+      return Ok(_repo.UpdateKeepShares(id));
+    }
 
     // DELETE api/Burgers/5
     [HttpDelete("{id}")]
