@@ -1,18 +1,10 @@
 <template>
   <div class="home container-fluid">
     <h1>Welcome Home {{this.user.username}}</h1>
-    <button v-if="checkedLoggedIn2()" @click="logout">Logout</button>
-    <form @submit.prevent="addKeep">
-      <input type="text" placeholder="Title" v-model.trim="newKeep.name" maxlength="20" required>
-      <input type="text" placeholder="Description" v-model.trim="newKeep.description" required maxlength="255">
-      <input type="text" placeholder="Image URL" v-model.trim="newKeep.img" required maxlength="255">
-      <button type="submit">Add Keep</button>
-      <button type="reset">Reset Form</button>
-    </form>
 
     <!-- Keeps -->
     <div class="row d-flex card-deck">
-      <keep v-for="k in keeps" :kp="k" :key="k.id" />
+      <keep v-for="k in keeps" :kp="k" :key="k.id" :view="'home'" />
     </div>
   </div>
 </template>
@@ -42,22 +34,10 @@
       }
     },
     mounted() {
-      this.checkedLoggedIn()
       this.getKeeps()
       this.getVaults()
     },
     methods: {
-      logout() {
-        this.$store.dispatch('logout')
-      },
-      checkedLoggedIn2() {
-        return (this.user.id) ? true : false;
-      },
-      checkedLoggedIn() {
-        if (this.user.id) {
-          this.loggedIn = true;
-        }
-      },
       getKeeps() {
         this.$store.dispatch('getPublicKeeps')
       },

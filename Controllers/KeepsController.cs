@@ -25,6 +25,15 @@ namespace BurgerShack.Controllers
       return _repo.GetAll();
     }
 
+    [HttpGet("mykeeps")]
+    public ActionResult<IEnumerable<Keep>> GetMyKeeps()
+    {
+      string user = HttpContext.User.Identity.Name;
+      if (user != null)
+        return Ok(_repo.GetUsersKeeps(user));
+      return Unauthorized("You need to log in to get keeps");
+    }
+
     // GET api/Keeps/5
     [HttpGet("{id}")]
     public ActionResult<Keep> Get(int id)

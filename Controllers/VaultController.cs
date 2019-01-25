@@ -29,7 +29,7 @@ namespace BurgerShack.Controllers
     [HttpGet("{id}")]
     public ActionResult<Vault> Get(int id)
     {
-      IEnumerable<Keep> vault = null;
+      Vault vault = null;
       string user = HttpContext.User.Identity.Name;
       if (user != null)
       {
@@ -80,10 +80,13 @@ namespace BurgerShack.Controllers
     }
 
     // DELETE api/Vault/5
-    [HttpDelete]
-    public ActionResult<string> Delete([FromBody] VaultKeep vk)
+    [HttpDelete("{vaultId}/{keepId}")]
+    public ActionResult<string> Delete(int vaultId, int keepId)
     {
+      VaultKeep vk = new VaultKeep();
       vk.UserId = HttpContext.User.Identity.Name;
+      vk.VaultId = vaultId;
+      vk.KeepId = keepId;
       if (_repo.DeleteVaultKeep(vk)) { return Ok("Successfully Deleted vault"); }
       return BadRequest("Unable to Delete Vault");
     }

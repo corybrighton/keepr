@@ -1,29 +1,35 @@
 <template>
   <div class="navbar">
-    <router-link :to="{name: 'home' }"><a>Home</a></router-link>
 
     <!-- Logged in navbar -->
-    <div v-if="user.id">
-      <router-link :to="{name: 'dashboard' }"><a>Dashboard</a></router-link>
+    <div v-if="user.id" class="row">
+      <div>
+        <router-link :to="{name: 'home' }"><button class="btn btn-primary">Home</button></router-link>
+      </div>
+      <div>
+        <router-link :to="{name: 'dashboard' }"><button class="btn btn-primary">Dashboard</button></router-link>
+      </div>
+      <div>
+        <button class="btn btn-primary" @click="logout">Logout</button>
+      </div>
     </div>
 
     <!-- Not Logged in navbar -->
-    <div v-else>
+    <div v-else class="row">
+      <router-link :to="{name: 'home' }"><button class="btn btn-primary">Home</button></router-link>
+      <button class="btn btn-primary" v-if="loginForm" @click="loginForm = !loginForm">Register</button>
+      <button class="btn btn-primary" v-else @click="loginForm = !loginForm">Login</button>
       <form v-if="loginForm" @submit.prevent="loginUser">
         <input type="email" v-model="creds.email" placeholder="email">
         <input type="password" v-model="creds.password" placeholder="password">
-        <button type="submit">Login</button>
+        <button class="btn btn-primary" type="submit">Login</button>
       </form>
       <form v-else @submit.prevent="register">
         <input type="text" v-model="newUser.username" placeholder="name">
         <input type="email" v-model="newUser.email" placeholder="email">
         <input type="password" v-model="newUser.password" placeholder="password">
-        <button type="submit">Create Account</button>
+        <button class="btn btn-primary" type="submit">Create Account</button>
       </form>
-      <div @click="loginForm = !loginForm">
-        <p v-if="loginForm">Or Register</p>
-        <p v-else>Or Login</p>
-      </div>
     </div>
   </div>
 </template>
@@ -51,6 +57,9 @@
       }
     },
     methods: {
+      logout() {
+        this.$store.dispatch('logout')
+      },
       register() {
         this.$store.dispatch("register", this.newUser);
       },
@@ -65,6 +74,8 @@
 <style scoped>
   .navbar {
     background-color: darkcyan;
+    display: flex;
+    justify-content: flex-end;
   }
 
   a {

@@ -22,6 +22,7 @@ export default new Vuex.Store({
     user: {},
     keeps: [],
     keepView: {},
+    myKeeps: [],
     vaults: [],
     vaultView: {}
   },
@@ -43,6 +44,9 @@ export default new Vuex.Store({
     },
     setVaultView(state, vault) {
       state.vaultView = vault
+    },
+    setMyKeeps(state, keeps) {
+      state.myKeeps = keeps
     }
 
   },
@@ -78,6 +82,7 @@ export default new Vuex.Store({
       auth.delete('logout')
         .then(res => {
           commit('setUser', {})
+          router.push({ name: 'home' })
         })
         .catch(e => {
           console.log('Logout Failed')
@@ -90,9 +95,11 @@ export default new Vuex.Store({
         .then(res => { commit('setKeeps', res.data) })
         .catch(e => { console.log('Unable to get Keeps', e) })
     },
-    addKeep({ commit }, newKeep) {
+    addKeep({ commit, dispatch }, newKeep) {
       api.post('keeps', newKeep)
-        .then(res => commit('addKeep', newKeep))
+        .then(res => {
+          dispatch('getMyKeeps')
+        })
         .catch(e => { console.log('Unable to add Keep', e) })
     },
     getKeep({ commit, dispatch }, id) {
@@ -103,6 +110,17 @@ export default new Vuex.Store({
           dispatch('getPublicKeeps')
         })
         .catch(e => { console.log('Unable to add Keep', e) })
+    },
+    getMyKeeps({ commit }) {
+      commit('setMyKeeps', [])
+      api.get('keeps/mykeeps')
+        .then(res => commit('setMyKeeps', res.data))
+        .catch(e => { console.log('Unable to get your keeps', e) })
+    },
+    deleteKeep({ commit, dispatch }, id) {
+      api.delete('keeps/' + id)
+        .then(res => dispatch('getMyKeeps'))
+        .catch(e => { console.log('Unable to delete Keep', e) })
     },
 
     // Vaults
@@ -122,10 +140,24 @@ export default new Vuex.Store({
         .catch(e => { console.log('Unable to get Vault', e) })
     },
     addToVault({ commit, dispatch }, vaultkeep) {
-      console.log(vaultkeep)
-      api.post('vaults/' + vaultkeep.vaultId)
+      api.post('vaults/' + vaultkeep.VaultId, vaultkeep)
         .then(res => dispatch('getPublicKeeps'))
         .catch(e => { console.log('Unable to add keep to vault', e) })
+    },
+    addVault({ commit, dispatch }, newVault) {
+      api.post('vaults', newVault)
+        .then(res => dispatch('getVaults'))
+        .catch(e => { console.log('Unable to add vault', e) })
+    },
+    deleteVault({ commit }, id) {
+      api.delete('vaults/' + id)
+        .then(res => router.push({ name: 'dashboard' }))
+        .catch(e => { console.log('Unable to delete vault', e) })
+    },
+    deleteKeepFromVault({ commit, dispatch }, vaultkeep) {
+      api.delete(`vaults/${vaultkeep.VaultId}/${vaultkeep.KeepId}`)
+        .then(res => dispatch('getVault', vaultkeep.VaultId))
+        .catch(e => { console.log('Unable to delete keep from vault', e) })
     }
   }
 })

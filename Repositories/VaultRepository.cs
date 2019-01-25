@@ -23,12 +23,16 @@ namespace Keepr.Repositories
       return _db.Query<Vault>("SELECT * FROM Vaults WHERE userId = @userId;", new { userId });
     }
 
-    public IEnumerable<Keep> GetById(int id, string userId)
+    public Vault GetById(int id, string userId)
     {
-      return _db.Query<Keep>(@"
+      Vault result = _db.QueryFirstOrDefault<Vault>(@"
+      SELECT * FROM vaults WHERE id = @id AND userId = @userId", new { id, userId });
+      result.VaultsKeeps = _db.Query<Keep>(@"
       SELECT * FROM vaultkeeps vk
       INNER JOIN keeps k ON k.id = vk.keepId
       WHERE(vaultId = @id AND vk.userId = @userId);", new { id, userId });
+
+      return result;
     }
 
     // Create
@@ -82,8 +86,9 @@ namespace Keepr.Repositories
 
     public bool DeleteVaultKeep(VaultKeep vk)
     {
-      int exe = _db.Execute("DELETE FROM vaultkeeps WHERE vaultId = @VaultId AND userId = @UserId AND keepId = @KeepId", vk);
-      return (exe != 0);
+      _db.Execute("UPDATE keeps SET keeps = keeps - 1 WHERE id = @KeepId", vk);
+      int exe = _db.QueryFirstOrDefault<int>("DELETE FROM vaultkeeps WHERE vaultId = @VaultId AND userId = @UserId AND keepId = @KeepId", vk);
+      return (exe != 1);
     }
 
   }

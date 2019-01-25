@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view />
-    <div class="mb-5">
+    <div class="space">
       <navbar class="fixed-bottom" />
     </div>
   </div>
@@ -36,5 +36,9 @@
 
   #nav a.router-link-exact-active {
     color: #42b983;
+  }
+
+  .space {
+    margin-bottom: 5rem;
   }
 </style>

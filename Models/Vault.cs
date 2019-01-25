@@ -8,7 +8,7 @@ namespace Keepr.Models
     public string Name { get; set; }
     public string Description { get; set; }
     public string UserId { get; set; }
-    public List<Keep> VaultsKeeps { get; set; }
+    public IEnumerable<Keep> VaultsKeeps { get; set; }
   }
 
   public class VaultKeep
