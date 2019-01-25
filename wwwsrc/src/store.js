@@ -122,6 +122,11 @@ export default new Vuex.Store({
         .then(res => dispatch('getMyKeeps'))
         .catch(e => { console.log('Unable to delete Keep', e) })
     },
+    share({ commit, dispatch }, id) {
+      api.put('keeps/' + id)
+        .then(res => dispatch('getPublicKeeps'))
+        .catch(e => { console.log('Unable to share', e) })
+    },
 
     // Vaults
     getVaults({ commit }) {

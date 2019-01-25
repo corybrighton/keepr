@@ -17,9 +17,7 @@
             <i class="fas fa-eye"></i>{{this.kp.views}}
           </div>
           <!-- Share post -->
-          <div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"
-            data-size="small" data-mobile-iframe="true"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse"
-              class="fb-xfbml-parse-ignore"><i class="fas fa-share" id="fb-root"></i></a>{{this.kp.shares}}
+          <div @click="share"><i class="fas fa-share"></i></a>{{this.kp.shares}}
           </div>
           <!-- Dropdown list of vaults to add to -->
           <div class="dropup">
@@ -87,6 +85,9 @@
       deleteKeepFromVault() {
         let vaultkeep = { UserId: "", VaultId: this.vaultId, KeepId: this.kp.id }
         this.$store.dispatch('deleteKeepFromVault', vaultkeep)
+      },
+      share() {
+        this.$store.dispatch('share', this.kp.id)
       }
     }
   }

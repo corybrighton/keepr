@@ -7,7 +7,7 @@
         <router-link :to="{name: 'home' }"><button class="bton">HOME</button></router-link>
       </div>
       <div>
-        <router-link :to="{name: 'dashboard' }"><button class="bton">DASHBOARD</button></router-link>
+        <router-link :to="{name: 'dashboard' }"><button class="bton mx-5">DASHBOARD</button></router-link>
       </div>
       <div>
         <button class="bton" @click="logout">LOGOUT</button>
