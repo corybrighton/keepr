@@ -66,21 +66,3 @@ When you are ready to push you site live you can simply run the `npm run build` 
 This process will take your files from the **wwwsrc** directory and will minify them and put the minified files into your **wwwroot** directory
 
 This happens because of a change to the **www/config/index.js** changing the build paths to match the path to root as opposed to the default 'dist' file
-
-### Finished?
-> We only grade the BUILT project. Make sure you test it. When You are finished submit your project to the gradebook
-
-### Some inspirational mocks
-
-<div style="text-align:center">
-	<img src="keepr-example.jpg" style="width: 80%">
-	<hr/>
-	<img src="keepr-signin.jpg" style="width: 80%">
-	<hr/>
-	<img src="keepr-keep-dashboard.jpg" style="width: 80%">
-	<hr/
-	>
-	<img src="keepr-vault-dashboard.jpg" style="width: 80%">
-</div>
-
-### Good Luck and Have Fun! 
